@@ -1,12 +1,13 @@
 from modeller import *
 from modeller.automodel import *
+import os
 
 # this is script will model a bunch of sequences in turn, on the same template.
 # it is meant to run after the sequence generator
 #first we set up an environment for modeller
 log.verbose()
 env = environ()
-env.io.atom_files_directory = ['.', './sequences', './models']
+env.io.atom_files_directory = ['.','./sequences', './models']
 env.libs.topology.read(file='$(LIB)/top_heav.lib')
 env.libs.parameters.read(file='$(LIB)/par.lib')
 
@@ -42,8 +43,12 @@ def model_del(path_to_sequence, path_to_template='./best_model_FLCN.pdb'):
     #index of the last model
     a.ending_model = 25
     a.make()
-    a.write(file='/models/'+name_no_extension+'.pdb', model_format='PDB')
+    a.write(file='./models/'+name_no_extension+'.pdb', model_format='PDB')
 
+# and now we loop through all the sequences in the sequences folder and invoke the model_del function on each
+for fasta_file in os.listdir('./sequences/'):
+    if fasta_file.endswith('.fasta'):
+        model_del('./sequences/'+fasta_file)
 
-model_del('./sequences/folliculin_del_1.fasta')
+#model_del('./sequences/folliculin_del_1.fasta')
 
